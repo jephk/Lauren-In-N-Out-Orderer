@@ -346,14 +346,14 @@
         .order-summary {
             position: fixed;
             bottom: 0;
-            bottom: env(safe-area-inset-bottom, 0);
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
             max-width: 480px;
             background: white;
             border-top: 3px solid var(--red);
-            padding: 14px 20px calc(32px + env(safe-area-inset-bottom, 0px));
+            padding: 14px 20px 32px;
+            padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
             box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
             z-index: 100;
         }
