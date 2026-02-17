@@ -40,7 +40,7 @@
             font-family: 'FranklinGothic', sans-serif;
             min-height: 100vh;
             min-height: -webkit-fill-available;
-            padding: 0;
+            padding: 0 0 120px 0;
             background: #F7F4F0;
             color-scheme: light only;
             -webkit-overflow-scrolling: touch;
@@ -249,7 +249,7 @@
             letter-spacing: 0;
             color: rgba(26,26,26,0.35);
             background: none;
-            padding: 0;
+            padding: 0 0 120px 0;
         }
 
         /* ── Presets grid ── */
@@ -350,15 +350,13 @@
 
         /* ── Sticky footer ── */
         .order-summary {
-            position: sticky;
+            position: fixed;
             bottom: 0;
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
+            left: 0;
+            right: 0;
             background: white;
             border-top: 3px solid var(--red);
             padding: 14px 20px 32px;
-            padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
             box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
             z-index: 100;
         }
@@ -504,6 +502,23 @@
             <div class="preset-desc" id="jeffs-desc">Cheeseburger, extra toasted bun, no lettuce, no tomato, chopped raw onions, add pickles, add ketchup</div>
             <div class="preset-more" id="jeffs-more" onclick="toggleDesc('jeffs')" style="display: none;">See more</div>
             <button class="preset-btn" onclick="loadJeffsSmashBurger()">Order This →</button>
+        </div>
+
+<!-- Placeholder Preset 1 -->
+        <div class="preset-card" style="opacity: 0.3; pointer-events: none;">
+            <div class="preset-eyebrow">⭐ Coming Soon</div>
+            <div class="preset-title">Your Favorite</div>
+            <div class="preset-desc">Save your go-to order here for quick access</div>
+            <button class="preset-btn" style="opacity: 0.5;">Order This →</button>
+        </div>
+
+<!-- Placeholder Preset 2 -->
+        <div class="preset-card preset-card-blue" style="opacity: 0.3; pointer-events: none;">
+            <div class="preset-eyebrow">⭐ Coming Soon</div>
+            <div class="preset-title">Another Fave</div>
+            <div class="preset-desc">Add another custom preset order</div>
+            <button class="preset-btn" style="opacity: 0.5;">Order This →</button>
+        </div>
         </div>
         </div>
 
