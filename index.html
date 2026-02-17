@@ -240,6 +240,20 @@
             <p>Build your perfect burger</p>
         </div>
 
+        <!-- Lauren's Usual Preset -->
+        <div class="card" style="border: 2px solid #FFD700; background: #FFFDF0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 4px;">Quick Order</div>
+                    <div style="font-size: 18px; font-weight: 700; color: #1A1A1A;">⭐ Lauren's Usual</div>
+                    <div style="font-size: 13px; color: #666; margin-top: 4px;">Cheeseburger, Animal Style, lightly toasted bun, chopped raw onions, add chopped chilis, add mustard, add ketchup</div>
+                </div>
+                <button onclick="loadLaurensUsual()" style="margin-left: 16px; flex-shrink: 0; background: #FFD700; border: none; border-radius: 10px; padding: 12px 16px; font-weight: 700; font-size: 14px; cursor: pointer;">
+                    Order This
+                </button>
+            </div>
+        </div>
+
         <!-- Burgers Section -->
         <div class="card">
             <div class="section-title">
@@ -352,14 +366,14 @@
             ],
             toppings: [
                 { id: 'lettuce', name: 'Lettuce', standard: true },
+                { id: 'extra-lettuce', name: 'Extra Lettuce', standard: false },
                 { id: 'tomato', name: 'Tomato', standard: true },
+                { id: 'extra-tomato', name: 'Extra Tomato', standard: false },
                 { id: 'raw-onions', name: 'Raw Onions', standard: true },
                 { id: 'chopped-raw-onions', name: 'Chopped Raw Onions', standard: false },
-                { id: 'pickles', name: 'Pickles', standard: false },
                 { id: 'whole-grilled-onion', name: 'Whole Grilled Onion', standard: false },
                 { id: 'chopped-grilled-onions', name: 'Chopped Grilled Onions', standard: false },
-                { id: 'extra-lettuce', name: 'Extra Lettuce', standard: false },
-                { id: 'extra-tomato', name: 'Extra Tomato', standard: false },
+                { id: 'pickles', name: 'Pickles', standard: false },
                 { id: 'chopped-chilis', name: 'Chopped Chilis', standard: false },
             ]
         };
@@ -383,6 +397,28 @@
                     <div class="item-price">$${burger.price.toFixed(2)}</div>
                 </div>
             `).join('');
+        }
+
+        function loadLaurensUsual() {
+            currentBurger = {
+                type: 'cheeseburger',
+                style: 'animal',
+                bun: 'light-toast',
+                condiments: { spread: true, 'extra-spread': true, mustard: true, ketchup: true },
+                toppings: { lettuce: true, tomato: true, pickles: true, 'chopped-grilled-onions': true, 'chopped-raw-onions': true, 'chopped-chilis': true }
+            };
+
+            document.getElementById('style-section').style.display = 'block';
+            document.getElementById('bun-section').style.display = 'block';
+            document.getElementById('condiments-section').style.display = 'block';
+
+            renderBurgers();
+            renderStyles();
+            renderBunOptions();
+            renderCondiments();
+            renderToppings();
+            updateOrderSummary();
+            openOrderModal();
         }
 
         function selectBurger(burgerId) {
@@ -436,7 +472,7 @@
             
             // Apply style presets
             if (styleId === 'animal') {
-                currentBurger.condiments = { spread: true, 'extra-spread': true, mustard: true };
+                currentBurger.condiments = { spread: true, 'extra-spread': true };
                 currentBurger.toppings = { lettuce: true, tomato: true, pickles: true, 'chopped-grilled-onions': true };
             } else if (styleId === 'protein') {
                 currentBurger.bun = 'protein-style';
@@ -562,12 +598,32 @@
             const toppingKeys = Object.keys(currentBurger.toppings);
             const condimentKeys = Object.keys(currentBurger.condiments);
 
-            // Standard defaults for a regular burger
-            const standardToppings = ['lettuce', 'tomato', 'raw-onions'];
-            const standardCondiments = ['spread'];
+            // Defaults per style — things already implied, no need to say them
+            const styleDefaultToppings = {
+                'regular':  ['lettuce', 'tomato', 'raw-onions'],
+                'animal':   ['lettuce', 'tomato', 'chopped-grilled-onions', 'pickles'],
+                'protein':  ['lettuce', 'tomato', 'raw-onions'],
+                'flying-dutchman': []
+            };
+            const styleDefaultCondiments = {
+                'regular':  ['spread'],
+                'animal':   ['spread', 'extra-spread'],
+                'protein':  ['spread'],
+                'flying-dutchman': []
+            };
 
-            const addedToppings = toppingKeys.filter(t => !standardToppings.includes(t));
-            const removedToppings = standardToppings.filter(t => !toppingKeys.includes(t));
+            const standardToppings = styleDefaultToppings[currentBurger.style] || ['lettuce', 'tomato', 'raw-onions'];
+            const standardCondiments = styleDefaultCondiments[currentBurger.style] || ['spread'];
+
+            const allOnionIds = ['raw-onions', 'chopped-raw-onions', 'whole-grilled-onion', 'chopped-grilled-onions'];
+            const styleDefaultOnions = standardToppings.filter(t => allOnionIds.includes(t));
+            const selectedOnions = toppingKeys.filter(t => allOnionIds.includes(t));
+            const hasAnyOnion = selectedOnions.length > 0;
+
+            // Non-onion toppings
+            const standardNonOnion = standardToppings.filter(t => !allOnionIds.includes(t));
+            const addedToppings = toppingKeys.filter(t => !standardToppings.includes(t) && !allOnionIds.includes(t));
+            const removedToppings = standardNonOnion.filter(t => !toppingKeys.includes(t));
 
             const addedCondiments = condimentKeys.filter(c => !standardCondiments.includes(c));
             const removedCondiments = standardCondiments.filter(c => !condimentKeys.includes(c))
@@ -579,7 +635,6 @@
             else if (currentBurger.bun === 'light-toast') bunNote = 'light toast';
             else if (currentBurger.bun === 'no-toast') bunNote = 'no toast';
 
-            // Friendly display names for condiments
             const condimentPhrases = {
                 'ketchup': 'add ketchup',
                 'mustard': 'add mustard',
@@ -594,7 +649,7 @@
                 'extra-lettuce': 'extra lettuce',
                 'extra-tomato': 'extra tomato',
                 'pickles': 'add pickles',
-                'chopped-chilis': 'chopped chilis',
+                'chopped-chilis': 'add chopped chilis',
             };
 
             // Bun phrases
@@ -617,16 +672,40 @@
             if (bunNote && bunPhrases[currentBurger.bun]) lines.push(bunPhrases[currentBurger.bun]);
 
             removedCondiments.forEach(c => lines.push(`no ${c.toLowerCase()}`));
-            addedCondiments.forEach(id => {
-                lines.push(condimentPhrases[id] || `add ${id.toLowerCase()}`);
-            });
 
             removedToppings.forEach(id => {
                 const name = menu.toppings.find(t => t.id === id)?.name || id;
                 lines.push(`no ${name.toLowerCase()}`);
             });
+
+            // Onion logic: list non-default selected variants, or "no onions" if none selected
+            if (!hasAnyOnion) {
+                if (currentBurger.style !== 'flying-dutchman') lines.push('no onions');
+            } else {
+                const nonDefaultOnions = selectedOnions.filter(id => !styleDefaultOnions.includes(id));
+                const missingDefaultOnions = styleDefaultOnions.filter(id => !selectedOnions.includes(id));
+
+                missingDefaultOnions.forEach(id => {
+                    // Don't say "no raw onions" if any other onion variant is selected — it's implied
+                    if (id === 'raw-onions' && selectedOnions.length > 0) return;
+                    const name = menu.toppings.find(t => t.id === id)?.name || id;
+                    lines.push(`no ${name.toLowerCase()}`);
+                });
+                nonDefaultOnions.forEach(id => {
+                    const phrase = toppingPhrases[id] || id;
+                    // Only say "add" if another onion is also active (true addition, not a replacement)
+                    const isAddition = selectedOnions.some(o => styleDefaultOnions.includes(o));
+                    lines.push(isAddition ? `add ${phrase}` : phrase);
+                });
+            }
+
             addedToppings.forEach(id => {
                 lines.push(toppingPhrases[id] || id.toLowerCase());
+            });
+
+            // Condiments last
+            addedCondiments.forEach(id => {
+                lines.push(condimentPhrases[id] || `add ${id.toLowerCase()}`);
             });
 
             if (currentBurger.style === 'flying-dutchman') {
