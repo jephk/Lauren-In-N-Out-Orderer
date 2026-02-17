@@ -922,51 +922,63 @@
             // Build spoken order lines
             let lines = [];
 
-            // Base + style
+            // 1. Base + style
             let headline = burger.name;
             if (currentBurger.style === 'animal') headline += ', Animal Style';
             else if (currentBurger.style === 'protein') headline += ', Protein Style';
             else if (currentBurger.style === 'flying-dutchman') headline = 'Flying Dutchman';
             lines.push(`<span style="color:#D32323">${headline}</span>`);
 
-            if (bunNote && bunPhrases[currentBurger.bun]) lines.push(bunPhrases[currentBurger.bun]);
-
+            // 2. Removals (condiments and toppings) - right after burger/style
             removedCondiments.forEach(c => lines.push(`no ${c.toLowerCase()}`));
-
             removedToppings.forEach(id => {
                 const name = menu.toppings.find(t => t.id === id)?.name || id;
                 lines.push(`no ${name.toLowerCase()}`);
             });
 
-            // Onion logic: list non-default selected variants, or "no onions" if none selected
-            if (!hasAnyOnion) {
+            // 3. Onions - special handling
+            // For regular style, must explicitly choose onions (no default)
+            // For other styles, handle based on what's selected
+            // Animal Style includes chopped grilled onions by default, so skip it
+            const isRegularStyle = currentBurger.style === 'regular';
+            const isAnimalStyle = currentBurger.style === 'animal';
+            
+            if (!hasAnyOnion && !isRegularStyle) {
+                // Only say "no onions" for non-regular styles
                 if (currentBurger.style !== 'flying-dutchman') lines.push('no onions');
-            } else {
-                const nonDefaultOnions = selectedOnions.filter(id => !styleDefaultOnions.includes(id));
-                const missingDefaultOnions = styleDefaultOnions.filter(id => !selectedOnions.includes(id));
-
-                missingDefaultOnions.forEach(id => {
-                    // Don't say "no raw onions" if any other onion variant is selected — it's implied
-                    if (id === 'raw-onions' && selectedOnions.length > 0) return;
-                    const name = menu.toppings.find(t => t.id === id)?.name || id;
-                    lines.push(`no ${name.toLowerCase()}`);
-                });
-                nonDefaultOnions.forEach(id => {
+            } else if (selectedOnions.length > 0) {
+                // Has onions selected
+                let isFirstOnion = true;
+                selectedOnions.forEach(id => {
+                    // Skip chopped grilled onions if Animal Style (it's included by default)
+                    if (isAnimalStyle && id === 'chopped-grilled-onions') return;
+                    
                     const phrase = toppingPhrases[id] || id;
-                    // Only say "add" if another onion is also active (true addition, not a replacement)
-                    const isAddition = selectedOnions.some(o => styleDefaultOnions.includes(o));
-                    lines.push(isAddition ? `add ${phrase}` : phrase);
+                    // If Animal Style, all onions use "add" (since grilled onions are already included)
+                    // Otherwise, first onion uses "with", additional use "add"
+                    if (isAnimalStyle) {
+                        lines.push(`add ${phrase}`);
+                    } else if (isFirstOnion) {
+                        lines.push(`with ${phrase}`);
+                        isFirstOnion = false;
+                    } else {
+                        lines.push(`add ${phrase}`);
+                    }
                 });
             }
 
+            // 4. Other toppings (non-onions)
             addedToppings.forEach(id => {
                 lines.push(toppingPhrases[id] || id.toLowerCase());
             });
 
-            // Condiments last
+            // 5. Condiments
             addedCondiments.forEach(id => {
                 lines.push(condimentPhrases[id] || `add ${id.toLowerCase()}`);
             });
+
+            // 6. Bun at the end
+            if (bunNote && bunPhrases[currentBurger.bun]) lines.push(bunPhrases[currentBurger.bun]);
 
             if (currentBurger.style === 'flying-dutchman') {
                 lines = [`<span style="color:#D32323">Flying Dutchman</span>`];
