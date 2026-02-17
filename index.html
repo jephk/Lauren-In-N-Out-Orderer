@@ -39,9 +39,15 @@
         body {
             font-family: 'FranklinGothic', sans-serif;
             min-height: 100vh;
-            padding: 0 0 180px 0;
+            min-height: -webkit-fill-available;
+            padding: 0;
             background: #F7F4F0;
             color-scheme: light only;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        html {
+            height: -webkit-fill-available;
         }
 
         #bg-canvas { display: none; }
@@ -344,12 +350,11 @@
 
         /* ── Sticky footer ── */
         .order-summary {
-            position: fixed;
+            position: sticky;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
             width: 100%;
             max-width: 480px;
+            margin: 0 auto;
             background: white;
             border-top: 3px solid var(--red);
             padding: 14px 20px 32px;
