@@ -44,7 +44,7 @@
         /* ── Top bar ── */
         .top-bar {
             padding: 0;
-            overflow: hidden;
+            overflow: visible;
         }
         .header-logo {
             width: 120%;
@@ -74,8 +74,8 @@
 
         /* ── Hero ── */
         .hero {
-            padding: 28px 24px 20px;
-            text-align: left;
+            padding: 24px 24px 20px;
+            text-align: center;
         }
         .hero-image-wrap {
             width: 100%;
@@ -95,20 +95,21 @@
             filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15));
         }
         .hero-title {
-            font-family: 'FranklinGothicCd', sans-serif;
-            font-size: 38px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            color: var(--text);
+            font-family: 'BrushScript', cursive;
+            font-size: 72px;
+            font-weight: 400;
+            color: var(--red);
             line-height: 1;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .hero-subtitle {
             font-family: 'FranklinGothic', sans-serif;
-            font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.4;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--red);
+            line-height: 1.2;
         }
 
         /* ── Content sections ── */
@@ -243,6 +244,7 @@
             line-height: 1.2;
             text-transform: uppercase;
             letter-spacing: 0.3px;
+            display: block;
         }
         .ingredient-tag {
             display: block;
@@ -569,7 +571,7 @@
 
         <!-- Hero -->
         <div class="hero">
-            <h1 class="hero-title" id="hero-title">The Order-er</h1>
+            <h1 class="hero-title" id="hero-title">The Orderer</h1>
             <p class="hero-subtitle" id="hero-subtitle">Build your In-N-Out order</p>
         </div>
 
