@@ -31,7 +31,7 @@
             --border: rgba(0,0,0,0.08);
         }
 
-        html { background: var(--cream); }
+        html { background: var(--cream); overflow-x: hidden; }
         body {
             font-family: 'FranklinGothic', system-ui, sans-serif;
             min-height: 100vh;
@@ -39,6 +39,7 @@
             background: var(--cream);
             color-scheme: light only;
             color: var(--text);
+            overflow-x: hidden;
         }
 
         /* ── Top bar ── */
@@ -96,11 +97,12 @@
         }
         .hero-title {
             font-family: 'BrushScript', cursive;
-            font-size: 72px;
+            font-size: clamp(42px, 13vw, 60px);
             font-weight: 400;
             color: var(--red);
             line-height: 1;
             margin-bottom: 8px;
+            white-space: nowrap;
         }
         .hero-subtitle {
             font-family: 'FranklinGothic', sans-serif;
@@ -720,7 +722,6 @@
                     <img class="burger-card-img" src="public/assets/${burgerImages[burger.id]}" alt="${burger.name}">
                     <div class="burger-card-name">${burger.name}</div>
                     <div class="burger-card-desc">${burger.description}</div>
-                    <div class="burger-card-price">$${burger.price.toFixed(2)}</div>
                 </div>
             `).join('');
         }
