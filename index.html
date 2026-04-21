@@ -332,6 +332,33 @@
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
         }
+        .preset-pill-empty {
+            flex-shrink: 0;
+            background: transparent;
+            border: 2px dashed var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            min-width: 140px;
+            max-width: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+            min-height: 100px;
+        }
+        .preset-pill-empty-icon {
+            font-size: 20px;
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+        .preset-pill-empty-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.6;
+            line-height: 1.4;
+        }
 
         /* ── Bottom bar ── */
         .bottom-bar {
@@ -749,26 +776,7 @@
 
         function initPresets() {
             if (!localStorage.getItem(PRESETS_KEY)) {
-                savePresetsToStorage([
-                    {
-                        id: 1,
-                        name: "Lauren's Usual",
-                        burger: {
-                            type: 'cheeseburger', style: 'animal', bun: 'light-toast',
-                            condiments: { spread: true, 'extra-spread': true, mustard: true, ketchup: true },
-                            toppings: { lettuce: true, tomato: true, pickles: true, 'chopped-grilled-onions': true, 'chopped-raw-onions': true, 'chopped-chilis': true }
-                        }
-                    },
-                    {
-                        id: 2,
-                        name: "Jeff's Smash-ish",
-                        burger: {
-                            type: 'cheeseburger', style: 'regular', bun: 'extra-toast',
-                            condiments: { spread: true, ketchup: true },
-                            toppings: { 'chopped-raw-onions': true, pickles: true }
-                        }
-                    }
-                ]);
+                savePresetsToStorage([]);
             }
         }
 
@@ -797,12 +805,16 @@
             const presets = loadPresetsFromStorage() || [];
             const grid = document.getElementById('presets-grid');
             const section = document.getElementById('presets-section');
+            section.style.display = 'block';
             if (presets.length === 0) {
-                grid.innerHTML = '';
-                section.style.display = 'none';
+                grid.innerHTML = `
+                    <div class="preset-pill-empty">
+                        <div class="preset-pill-empty-icon">☆</div>
+                        <div class="preset-pill-empty-text">Save your usual<br>after building an order</div>
+                    </div>
+                `;
                 return;
             }
-            section.style.display = 'block';
             grid.innerHTML = presets.map((preset, i) => {
                 const altClass = i % 2 === 1 ? 'preset-pill-alt' : '';
                 const desc = generatePresetDescription(preset.burger);
